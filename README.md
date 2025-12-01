@@ -2,17 +2,15 @@
 
 ## Project Goal
 
-The primary objective of this project was to develop, optimize, and evaluate a robust machine learning model capable of predicting customer credit default (binary classification) with high discriminatory power, measured by the Area Under the Receiver Operating Characteristic Curve (ROC-AUC).
+The main goal of this project was to build, improve, and test a strong machine learning model that predicts whether a customer will default on credit (binary classification). Its performance was measured using the ROC-AUC score.
 
 **Target Variable:** `default` (1 = Default, 0 = Non-Default)
 
 ## Initial Challenge & Baseline
+1. **Severe Class Imbalance:** About **95%** of cases were non-defaults (0) and only **5%** were defaults (1), so special techniques were needed.
+2. **Data Quality Issues:** Important numeric features (like `loan_amount`, `annual_income`) were stored as strings because of symbols and commas.
+3. **High Cardinality:** Non-useful features such as `referral_code` and extra ID columns added unnecessary noise.
 
-The initial model achieved a baseline ROC-AUC of **$0.7770$**. Key challenges identified were:
-
-1.  **Severe Class Imbalance:** The dataset contained approximately $95\%$ non-default cases ($\text{0}$) and only $5\%$ default cases ($\text{1}$), requiring specialized handling.
-2.  **Data Quality Issues:** Multiple critical numerical features (e.g., `loan_amount`, `annual_income`) were incorrectly stored as `object` (string) types due to currency symbols and commas.
-3.  **High Cardinality:** Non-predictive features like `referral_code` and multiple redundant ID columns added noise.
 
 ---
 
@@ -22,20 +20,20 @@ The project followed a meticulous three-phase strategy to maximize predictive pe
 
 ### Phase 1: Data Cleansing and Engineering
 
-| Step | Action | Impact |
-| :--- | :--- | :--- |
-| **Data Cleaning** | Cleaned and converted 11 financial columns from `object` to `float` (e.g., `loan_amount`, `annual_income`). | Unlocked the use of core financial data for the model. |
-| **Missing Values** | Imputed missing values in `employment_length`, `revolving_balance`, and `num_delinquencies_2yrs` using the **median**. | Ensured a complete, usable dataset. |
-| **Feature Engineering** | Engineered **three highly predictive financial ratios**, including the effective `cash_flow_to_income_ratio`. | Increased predictive signal by capturing customer financial leverage and liquidity. |
-| **Encoding** | Applied **One-Hot Encoding (OHE)** to 10 cleaned categorical features (e.g., `loan_type`, `employment_type`) and dropped 9 non-predictive ID columns. | Created a clean, 118-feature matrix suitable for ML. |
+| Step | Action |
+| :--- | :--- |
+| **Data Cleaning** | Cleaned and converted 11 financial columns from `object` to `float` (e.g., `loan_amount`, `annual_income`). |
+| **Missing Values** | Imputed missing values in `employment_length`, `revolving_balance`, and `num_delinquencies_2yrs` using the **median**. |
+| **Feature Engineering** | Engineered **three highly predictive financial ratios**, including the effective `cash_flow_to_income_ratio`. |
+| **Encoding** | Applied **One-Hot Encoding (OHE)** to 10 cleaned categorical features (e.g., `loan_type`, `employment_type`) and dropped 9 non-predictive ID columns. |
 
 ### Phase 2: Model Training and Optimization
 
-| Model | Technique | Key Achievement | ROC-AUC Score |
-| :--- | :--- | :--- | :--- |
-| **Baseline XGBoost** | Training with **Scale Position Weight ($\approx 18.59$ to handle imbalance)**. | Successfully addressed class imbalance, boosting initial performance. | $0.7870$ |
-| **Tuned XGBoost (Final)**| **Randomized Search Cross-Validation** (50 Iterations). | Optimal hyperparameter tuning led to the highest ranking score. | **$\mathbf{0.8073}$** |
-| **Model Comparison**| Tested against CatBoost, Logistic Regression, and Decision Tree. | Confirmed that the **Tuned XGBoost** provided the strongest ROC-AUC, validating the ensemble tree approach. | - |
+| Model | Technique | ROC-AUC Score |
+| :--- | :--- | :--- |
+| **Baseline XGBoost** | Training with **Scale Position Weight ($\approx 18.59$ to handle imbalance)**. | $0.7870$ |
+| **Tuned XGBoost (Final)**| **Randomized Search Cross-Validation** (50 Iterations). | **$\mathbf{0.8073}$** |
+| **Model Comparison**| Tested against CatBoost, Logistic Regression, and Decision Tree. | - |
 
 ---
 
@@ -45,25 +43,25 @@ The final Tuned XGBoost model achieved a significant improvement over the baseli
 
 ### Final Performance Metrics
 
-| Metric | Score | Interpretation |
-| :--- | :--- | :--- |
-| **Final ROC-AUC** | **$\mathbf{0.8073}$** | The model's ability to correctly rank customers by default risk. **($+3.03\%$ gain)** |
-| **Cross-Validation Score** | $0.8028$ | Confirms the model's stability and robustness against overfitting. |
+| Metric | Score |
+| :--- | :--- |
+| **Final ROC-AUC** | **$\mathbf{0.8073}$** |
+| **Cross-Validation Score** | $0.8028$ | 
 
 ### Top 15 Predictive Features
 
 Understanding these features provides immediate, actionable intelligence for the bank's underwriting and risk management teams.
 
-| Rank | Feature | Category | Importance | Business Implication |
-| :--- | :--- | :--- | :--- | :--- |
-| **1** | `credit_score` | Primary Risk | 427 | Remains the single most important factor. |
-| **2** | `age` | Demographics | 224 | Proxy for financial stability and experience. |
-| **3** | `credit_utilization` | Credit Health | 208 | High usage relative to credit limit is a major stress indicator. |
-| **4** | `monthly_free_cash_flow` | Liquidity | 178 | Raw cash left after expenses is highly predictive. |
-| **9** | `cash_flow_to_income_ratio` | **Engineered Ratio** | 106 | **Confirms the success of feature engineering.** |
-| **11** | `loan_type_Personal` | Loan Type | 82 | Suggests higher inherent risk for personal loans vs. mortgage/card. |
-| **13** | `regional_unemployment_rate` | Economic Factor | 79 | Highlights the importance of macro-economic context. |
-| *... and other core debt/income ratios.* | | | | |
+| Rank | Feature | Importance |
+| :--- | :--- |  :--- |
+| **1** | `credit_score` | 427 (Most important factor) |
+| **2** | `age` | 224 |
+| **3** | `credit_utilization` | 208 | 
+| **4** | `monthly_free_cash_flow` | 178 |
+| **9** | `cash_flow_to_income_ratio` | 106 (**Engineered Ratio**) |
+| **11** | `loan_type_Personal` | 82 |
+| **13** | `regional_unemployment_rate` | 79 |
+| *... other debt/income ratios.* | | | | |
 
 ---
 
