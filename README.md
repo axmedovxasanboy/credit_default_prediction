@@ -1,12 +1,12 @@
-# 🏦 Credit Default Prediction Model (Bank Customer Dataset)
+# Credit Default Prediction Model (Bank Customer Dataset)
 
-## 🎯 Project Goal
+## Project Goal
 
 The primary objective of this project was to develop, optimize, and evaluate a robust machine learning model capable of predicting customer credit default (binary classification) with high discriminatory power, measured by the Area Under the Receiver Operating Characteristic Curve (ROC-AUC).
 
 **Target Variable:** `default` (1 = Default, 0 = Non-Default)
 
-## 📊 Initial Challenge & Baseline
+## Initial Challenge & Baseline
 
 The initial model achieved a baseline ROC-AUC of **$0.7770$**. Key challenges identified were:
 
@@ -16,7 +16,7 @@ The initial model achieved a baseline ROC-AUC of **$0.7770$**. Key challenges id
 
 ---
 
-## 🛠️ Modeling Strategy and Achievements
+## Modeling Strategy and Achievements
 
 The project followed a meticulous three-phase strategy to maximize predictive performance:
 
@@ -39,7 +39,7 @@ The project followed a meticulous three-phase strategy to maximize predictive pe
 
 ---
 
-## 🔬 Key Results and Business Insights
+## Key Results and Business Insights
 
 The final Tuned XGBoost model achieved a significant improvement over the baseline.
 
@@ -67,7 +67,7 @@ Understanding these features provides immediate, actionable intelligence for the
 
 ---
 
-## 💻 Repository Contents
+## Repository Contents
 
 This repository contains the following critical files:
 
